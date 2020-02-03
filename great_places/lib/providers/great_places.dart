@@ -14,11 +14,12 @@ class GreatPlaces with ChangeNotifier {
     final newPlace = Place(
       id: DateTime.now().toString(),
       image: pickedImage,
+      title: pickedTitle,
       location: null,
     );
     _items.add(newPlace);
     notifyListeners();
-    DBHelper.insert('places', {
+    DBHelper.insert('user_places', {
       'id': newPlace.id,
       'title': newPlace.title,
       //raw image cannot go in db
@@ -27,12 +28,12 @@ class GreatPlaces with ChangeNotifier {
   }
 
   Future<void> fetchAndSetPlaces() async {
-    final dataList = await DBHelper.getData('places');
+    final dataList = await DBHelper.getData('user_places');
     //create file from path of image from db
     _items = dataList
         .map((item) => Place(
               id: item['id'],
-              title: item['tile'],
+              title: item['title'],
               image: File(item['image']),
               location: null,
             ))
