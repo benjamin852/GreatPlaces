@@ -6,17 +6,23 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
+  final Function onSelectImage;
+  ImageInput(this.onSelectImage);
   @override
   _ImageInputState createState() => _ImageInputState();
 }
 
 class _ImageInputState extends State<ImageInput> {
   File _storedImage;
+
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker.pickImage(
       source: ImageSource.camera,
       maxWidth: 600,
     );
+    if (imageFile == null) {
+      return;
+    }
     setState(() => _storedImage = imageFile);
     //directory reserved for app data
     final appDirectory = await syspaths.getApplicationDocumentsDirectory();
@@ -24,6 +30,7 @@ class _ImageInputState extends State<ImageInput> {
     final fileName = path.basename(imageFile.path);
     //copy file into path and keep filename
     final savedImage = await imageFile.copy('${appDirectory.path}/$fileName');
+    widget.onSelectImage(savedImage);
   }
 
   @override
