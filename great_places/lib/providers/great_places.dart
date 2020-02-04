@@ -17,6 +17,7 @@ class GreatPlaces with ChangeNotifier {
       pickedLocation.latitude,
       pickedLocation.longitude,
     );
+    //update model
     final updatedLocation = PlaceLocation(
       latitude: pickedLocation.latitude,
       longitude: pickedLocation.longitude,
@@ -30,23 +31,30 @@ class GreatPlaces with ChangeNotifier {
     );
     _items.add(newPlace);
     notifyListeners();
+    //update DB from model
     DBHelper.insert('user_places', {
       'id': newPlace.id,
       'title': newPlace.title,
-      //raw image cannot go in db
       'image': newPlace.image.path,
+      'loc_lat': newPlace.location.latitude,
+      'loc_long': newPlace.location.longitude,
+      'address': newPlace.location.address,
     });
   }
 
   Future<void> fetchAndSetPlaces() async {
     final dataList = await DBHelper.getData('user_places');
-    //create file from path of image from db
+    //update provider from db
     _items = dataList
         .map((item) => Place(
               id: item['id'],
               title: item['title'],
               image: File(item['image']),
-              location: null,
+              location: PlaceLocation(
+                latitude: item['loc_latitude'],
+                longitude: item['loc_longitude'],
+                address: item['address'],
+              ),
             ))
         .toList();
     notifyListeners();
