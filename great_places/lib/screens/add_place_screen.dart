@@ -21,6 +21,8 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     _pickedImage = pickedImage;
   }
 
+  void _selectPlage(double latitude, double longitude) {}
+
   void _savePlace() {
     if (_titleController.text.isEmpty || _pickedImage == null) {
       return;
